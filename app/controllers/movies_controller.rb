@@ -7,13 +7,20 @@ class MoviesController < ApplicationController
   end
 
   def index
+    if params[:ratings]
+      @ratings = params[:ratings]
+    end
+    
     columns = {'title'=>'title', 'release_date'=>'release_date'}
     if columns.has_key?(params[:orderby])
       @orderby = columns[params[:orderby]]
-      @movies = Movie.order(@orderby)
+      query = Movie.order(@orderby)
     else
-      @movies = Movie.all
+      query = Movie
     end
+
+    @movies = @ratings.nil? ? query.all : query.find_all_by_rating(@ratings.map { |r| r[0] })
+    @all_ratings = Movie.ratings
   end
 
   def new
