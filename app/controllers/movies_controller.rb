@@ -7,7 +7,13 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    columns = {'title'=>'title', 'release_date'=>'release_date'}
+    if columns.has_key?(params[:orderby])
+      @orderby = columns[params[:orderby]]
+      @movies = Movie.order(@orderby)
+    else
+      @movies = Movie.all
+    end
   end
 
   def new
